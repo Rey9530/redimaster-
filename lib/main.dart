@@ -18,6 +18,7 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => AuthProvide()),
         ChangeNotifierProvider(create: (_) => PreferenceStorageProvide()),
+        ChangeNotifierProvider(create: (_) => CustomerProvide()),
       ],
       child: const MaterialWidget(),
     );
@@ -59,7 +60,18 @@ class MaterialW extends StatelessWidget {
       theme: themesData[provider.theme],
       debugShowCheckedModeBanner: false,
       initialRoute: 'checking',
-      home: const LoginPage(),
+      // home: const LoginPage(),
+      routes: {
+        'checking': (_) => const CheckAuthScreen(),
+        '/profile': (_) => const ProfilePage(),
+        '/customer': (_) => const CustomerPage(),
+        '/customers': (_) => const CustomersPage(),
+        '/add/customer': (_) => const AddCustomerPage(),
+        '/loans': (_) => const LoadPage(),
+        '/charge': (_) => const ChargeInfoPage(),
+        '/process_payament': (_) => const ProcessPaymentPage(),
+        '/charges': (_) => const ChargesPage(),
+      },
     );
   }
 }

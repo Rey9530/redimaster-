@@ -1,1 +1,11 @@
 export 'package:credimaster/src/pages/login/login_page.dart';
+export 'package:credimaster/src/pages/home/home_page.dart';
+export 'package:credimaster/src/pages/cheking_page.dart';
+export 'package:credimaster/src/pages/profile/profile_page.dart';
+export 'package:credimaster/src/pages/customer/customer_page.dart';
+export 'package:credimaster/src/pages/customer/customers_page.dart';
+export 'package:credimaster/src/pages/customer/loans_page.dart';
+export 'package:credimaster/src/pages/customer/add_customer_page.dart';
+export 'package:credimaster/src/pages/charges/charge_info_page.dart'; 
+export 'package:credimaster/src/pages/charges/process_payament_page.dart'; 
+export 'package:credimaster/src/pages/charges/charges_page.dart'; 

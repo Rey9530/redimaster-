@@ -1,8 +1,9 @@
 import 'dart:convert';
 
+import 'package:credimaster/src/models/models.dart';
 import 'package:credimaster/src/providers/providers.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart'; 
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 // import 'package:package_info_plus/package_info_plus.dart';
 
 class AuthProvide extends ChangeNotifier {
@@ -30,16 +31,21 @@ class AuthProvide extends ChangeNotifier {
     loadingF(false);
     if (resp.statusCode == 200) {
       await storage.deleteAll();
-      // final response = userModelFromJson(resp.body);
+      final response = usersModelFromJson(resp.body);
       // await storage.write(key: 'user_s', value: userController.text);
       // await storage.write(key: 'password_s', value: passwordController.text);
-      // userController.text = '';
-      // passwordController.text = '';
-      // await saveStorage(response);
-      return resp.statusCode;
+      userController.text = '';
+      passwordController.text = '';
+      await saveStorage(response);
+      return resp.statusCode.toString();
       // return response.data;
     } else {
-      return "419";
+      var msj = jsonDecode(resp.body);
+      var codec = "Error de credenciales";
+      if (msj != null && msj['message'] != null && msj['message'].length > 0) {
+        codec = msj['message'];
+      }
+      return codec;
     }
   }
 
@@ -85,16 +91,17 @@ class AuthProvide extends ChangeNotifier {
     if (token == 'false') {
       return "419";
     }
-    final jsonData = await conexion.get_('auth/verify');
+    final jsonData =
+        await conexion.get_('verify', {}, {'Authorization': 'Bearer $token'});
     if (jsonData.statusCode == 200) {
-      // final response = userModelFromJson(jsonData.body);
+      final response = usersModelFromJson(jsonData.body);
       // final response = jsonDecode(jsonData.body);
       var returns = jsonData.statusCode.toString();
       var biometric = await storage.read(key: 'biometric');
       if (biometric == 'true') {
         returns = 'biometric';
       }
-      // await saveStorage(response);
+      await saveStorage(response);
       return returns;
     } else {
       return "419";
@@ -109,24 +116,19 @@ class AuthProvide extends ChangeNotifier {
     await storage.delete(key: 'biometric');
   }
 
-  // saveStorage(UserModel response) async {
-  //   await storage.write(key: 'name', value: response.data.name);
-  //   await storage.write(key: 'charge', value: response.data.charge);
-  //   await storage.write(key: 'hiring_type', value: response.data.hiringType);
-  //   await storage.write(
-  //       key: 'years_working', value: response.data.yearsWorking.toString());
-  //   await storage.write(key: 'location', value: response.data.location);
-  //   await storage.write(key: 'isss', value: response.data.isss);
-  //   await storage.write(
-  //       key: 'version', value: response.data.version.toString());
-  //   await storage.write(key: 'sat', value: response.data.sat.toString());
-  //   await storage.write(key: 'saues', value: response.data.saues.toString());
-  //   await storage.write(key: 'pe', value: response.data.pe.toString());
-  //   if (response.data.token.length > 4) {
-  //     await storage.write(key: 'token', value: response.data.token);
-  //   }
-  //   return response.data.name;
-  // }
+  UserModel? userModel;
+  saveStorage(UsersModel response) async {
+    userModel = response.data;
+    await storage.write(key: 'name', value: response.data.name);
+    await storage.write(key: 'id_user', value: response.data.idUser.toString());
+    await storage.write(key: 'roll', value: response.data.roll.toString());
+    await storage.write(key: 'user', value: response.data.user);
+
+    if (response.data.token.length > 4) {
+      await storage.write(key: 'token', value: response.data.token);
+    }
+    return response.data.name;
+  }
 
   // updatePassword(valor) async {
   //   var body = {

@@ -2,6 +2,7 @@ import 'package:credimaster/src/pages/login/widget/login_header_wiget.dart';
 import 'package:credimaster/src/providers/providers.dart';
 import 'package:credimaster/src/widgets/rounded_button_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 
 class LoginPage extends StatelessWidget {
@@ -47,8 +48,21 @@ class LoginPage extends StatelessWidget {
                         : RoundedButtonWidget(
                             text: "INICIAR SESION",
                             onPressed: () async {
-                              if (!provider.formKey.currentState!.validate()) return;
-                              // dynamic resp = await provider.logIn(); 
+                              if (!provider.formKey.currentState!.validate()) {
+                                return;
+                              }
+                              dynamic resp = await provider.logIn();
+                              if (resp == "200") {
+                                // ignore: use_build_context_synchronously
+                                Navigator.of(context).pushNamedAndRemoveUntil(
+                                  'checking',
+                                  (Route<dynamic> route) => false,
+                                );
+                              } else {
+                                Fluttertoast.showToast(
+                                  msg: resp,
+                                );
+                              }
                             },
                           ),
                   ],

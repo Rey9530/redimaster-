@@ -75,8 +75,8 @@ class ConexionesProvider extends ChangeNotifier {
     final token = await storage.read(key: 'token') ?? '0000';
 
     Map<String, String> headersRequest = {
-      ...requestHeaders,
       ...?headers,
+      ...requestHeaders,
       'Authorization': "Bearer $token"
     };
     http.Response response;
